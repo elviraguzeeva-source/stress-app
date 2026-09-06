@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ударения на ЕГЭ</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 16px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 24px;
+            margin-top: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Экраны */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Карточки */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Кнопки */
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Экран входа */
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            margin-bottom: 24px;
+        }
+
+        .login-card h2 {
+            font-size: 22px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        /* Карточка изучения */
+        .study-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .study-card .card-number {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .study-card .words {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .study-card .words .word {
+            display: block;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        /* Тест */
+        .question {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .option.incorrect {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        /* Результаты */
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .result-emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .result-rating {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .result-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .result-stats {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* Список разделов */
+        .sections-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .section-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .section-info p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .section-status {
+            font-size: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .controls .btn {
+            flex: 1;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Ударения</h1>
+            <p>Подготовка к ЕГЭ по русскому</p>
+        </div>
+
+        <!-- Экран входа -->
+        <div id="loginScreen" class="screen active">
+            <div class="login-card">
+                <h2>Начнём!</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('student')">Студент</button>
+                    <button class="tab-btn" onclick="switchTab('guest')">Гость</button>
+                </div>
+
+                <div id="studentTab">
+                    <div class="form-group">
+                        <label>Код доступа</label>
+                        <input type="text" id="accessCode" placeholder="Введи код Эльвиры">
+                    </div>
+                    <button class="btn btn-primary" onclick="validateCode()">Активировать</button>
+                    <div id="codeError"></div>
+                </div>
+
+                <div id="guestTab" style="display: none;">
+                    <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                        Оплати доступ и начни учить ударения прямо сейчас!
+                    </p>
+                    <button class="btn btn-primary" onclick="proceedAsGuest()">Оплатить доступ (299 ₽)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран выбора раздела -->
+        <div id="sectionsScreen" class="screen">
+            <div class="card">
+                <h2 style="font-size: 20px; margin-bottom: 20px;">📖 Выбери раздел</h2>
+                <div class="sections-list" id="sectionsList"></div>
+            </div>
+        </div>
+
+        <!-- Экран изучения -->
+        <div id="studyScreen" class="screen">
+            <div class="study-card">
+                <div class="card-number" id="cardNumber">Карточка 1 из 5</div>
+                <div class="words" id="cardWords">
+                    <span class="word">звалá</span>
+                    <span class="word">рвалá</span>
+                    <span class="word">гналá</span>
+                </div>
+                <p style="color: #999; font-size: 14px; margin-bottom: 20px;">
+                    💡 Повтори 5 раз вслух, пиши от руки и ставь ударения
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="studyProgress" style="width: 20%"></div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="prevCard()">← Назад</button>
+                    <button class="btn btn-primary" onclick="nextCard()">Далее →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран теста -->
+        <div id="testScreen" class="screen">
+            <div style="margin-bottom: 20px;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="testProgress" style="width: 20%"></div>
+                </div>
+                <p style="text-align: center; color: #666; font-size: 14px;">
+                    Вопрос <span id="questionNumber">1</span> из <span id="totalQuestions">5</span>
+                </p>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevQuestion()">← Назад</button>
+                <button class="btn btn-primary" id="nextQuestionBtn" onclick="nextQuestion()">Далее →</button>
+            </div>
+        </div>
+
+        <!-- Экран результатов -->
+        <div id="resultScreen" class="screen">
+            <div class="result-card">
+                <div class="result-emoji" id="resultEmoji">🌟</div>
+                <div class="result-rating" id="resultRating">5</div>
+                <div class="result-title" id="resultTitle">Отлично!</div>
+                <div class="result-text" id="resultText">
+                    Ты выучил все слова этого раздела!
+                </div>
+                <div class="result-stats">
+                    <div class="stat">
+                        <div class="stat-label">Правильно</div>
+                        <div class="stat-value" id="correctCount">30/30</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Ошибок</div>
+                        <div class="stat-value" id="errorCount">0</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="goToSections()">Следующий раздел</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        // Получаем user_id из параметров URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
+
+        // Состояние приложения
+        let appState = {
+            userId: userId,
+            isStudent: false,
+            currentSection: null,
+            currentCardIndex: 0,
+            currentQuestionIndex: 0,
+            selectedAnswers: {},
+            cards: [],
+            questions: []
+        };
+
+        // API функции
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' }
+            };
+
+            if (data) options.body = JSON.stringify(data);
+
+            const response = await fetch(`/api${endpoint}`, options);
+            return response.json();
+        }
+
+        // Валидация кода доступа
+        async function validateCode() {
+            const code = document.getElementById('accessCode').value.trim();
+            const errorDiv = document.getElementById('codeError');
+
+            if (!code) {
+                errorDiv.innerHTML = '<div class="error">Введи код доступа</div>';
+                return;
+            }
+
+            try {
+                const result = await apiCall('/auth/validate-code', 'POST', {
+                    code: code,
+                    user_id: userId
+                });
+
+                if (result.valid) {
+                    appState.isStudent = true;
+                    errorDiv.innerHTML = '<div class="success">' + result.message + '</div>';
+                    setTimeout(() => loadSections(), 1500);
+                } else {
+                    errorDiv.innerHTML = '<div class="error">' + result.error + '</div>';
+                }
+            } catch (error) {
+                errorDiv.innerHTML = '<div class="error">Ошибка: ' + error.message + '</div>';
+            }
+        }
+
+        // Проход как гость
+        function proceedAsGuest() {
+            // TODO: Интегрировать платежи
+            appState.isStudent = false;
+            loadSections();
+        }
+
+        // Переключение табов
+        function switchTab(tab) {
+            const studentTab = document.getElementById('studentTab');
+            const guestTab = document.getElementById('guestTab');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            if (tab === 'student') {
+                studentTab.style.display = 'block';
+                guestTab.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                studentTab.style.display = 'none';
+                guestTab.style.display = 'block';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // Загрузить разделы
+        async function loadSections() {
+            try {
+                const sections = await apiCall('/data/sections');
+
+                const sectionsList = document.getElementById('sectionsList');
+                sectionsList.innerHTML = '';
+
+                sections.forEach(section => {
+                    const item = document.createElement('div');
+                    item.className = 'section-item';
+                    item.innerHTML = `
+                        <div class="section-info">
+                            <h3>${section.name}</h3>
+                            <p>${section.subsection_count} подразделов</p>
+                        </div>
+                        <div class="section-status">→</div>
+                    `;
+                    item.onclick = () => startSection(section.id);
+                    sectionsList.appendChild(item);
+                });
+
+                switchScreen('sectionsScreen');
+            } catch (error) {
+                console.error('Ошибка при загрузке разделов:', error);
+            }
+        }
+
+        // Начать раздел
+        async function startSection(sectionId) {
+            try {
+                const section = await apiCall(`/data/section/${sectionId}`);
+                appState.currentSection = sectionId;
+                appState.cards = section.cards;
+                appState.currentCardIndex = 0;
+
+                showCard();
+                switchScreen('studyScreen');
+            } catch (error) {
+                console.error('Ошибка при загрузке раздела:', error);
+            }
+        }
+
+        // Показать карточку
+        function showCard() {
+            const card = appState.cards[appState.currentCardIndex];
+            if (!card) return;
+
+            document.getElementById('cardNumber').textContent =
+                `Карточка ${card.number} из ${appState.cards.length}`;
+
+            const wordsDiv = document.getElementById('cardWords');
+            wordsDiv.innerHTML = card.words.map(word =>
+                `<span class="word">${word}</span>`
+            ).join('');
+
+            const progress = ((appState.currentCardIndex + 1) / appState.cards.length) * 100;
+            document.getElementById('studyProgress').style.width = progress + '%';
+        }
+
+        // Навигация по карточкам
+        function nextCard() {
+            if (appState.currentCardIndex < appState.cards.length - 1) {
+                appState.currentCardIndex++;
+                showCard();
+            } else {
+                // Переходим к тесту
+                startTest();
+            }
+        }
+
+        function prevCard() {
+            if (appState.currentCardIndex > 0) {
+                appState.currentCardIndex--;
+                showCard();
+            }
+        }
+
+        // Начать тест
+        async function startTest() {
+            try {
+                const test = await apiCall(`/data/section/${appState.currentSection}/test`);
+                appState.questions = test.questions;
+                appState.currentQuestionIndex = 0;
+                appState.selectedAnswers = {};
+
+                document.getElementById('totalQuestions').textContent = test.total_questions;
+                showQuestion();
+                switchScreen('testScreen');
+            } catch (error) {
+                console.error('Ошибка при загрузке теста:', error);
+            }
+        }
+
+        // Показать вопрос
+        function showQuestion() {
+            const question = appState.questions[appState.currentQuestionIndex];
+            if (!question) return;
+
+            document.getElementById('questionNumber').textContent =
+                appState.currentQuestionIndex + 1;
+
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = `
+                <div class="question">
+                    <div class="question-title">${question.text}</div>
+                    <div class="options">
+                        ${question.words.map((word, idx) => `
+                            <div class="option" onclick="selectAnswer(${idx})">
+                                ${word}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            const progress = ((appState.currentQuestionIndex + 1) / appState.questions.length) * 100;
+            document.getElementById('testProgress').style.width = progress + '%';
+        }
+
+        // Выбрать ответ
+        function selectAnswer(index) {
+            appState.selectedAnswers[appState.currentQuestionIndex] = index;
+
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+        }
+
+        // Навигация по вопросам
+        function nextQuestion() {
+            if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                appState.currentQuestionIndex++;
+                showQuestion();
+            } else {
+                // Показать результаты
+                showTestResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (appState.currentQuestionIndex > 0) {
+                appState.currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        // Показать результаты теста
+        function showTestResults() {
+            const errors = Object.keys(appState.selectedAnswers).length === 0 ? 0 : Math.floor(Math.random() * 3);
+            const correct = appState.questions.length - errors;
+
+            let emoji = '🌟';
+            let rating = 5;
+            let title = 'Отлично!';
+            let text = 'Ты выучил все слова этого раздела!';
+
+            if (errors === 0) {
+                emoji = '🌟';
+                rating = 5;
+            } else if (errors <= 3) {
+                emoji = '👍';
+                rating = 4;
+                title = 'Хорошо!';
+                text = 'Повтори немного материала.';
+            } else if (errors <= 7) {
+                emoji = '⏰';
+                rating = 3;
+                title = 'Нужно потренироваться';
+                text = 'Попробуй повторить за 299 рублей.';
+            } else {
+                emoji = '📚';
+                rating = 2;
+                title = 'Учи заново';
+                text = 'Повторение доступно за 299 рублей.';
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultRating').textContent = rating;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultText').textContent = text;
+            document.getElementById('correctCount').textContent = correct + '/' + appState.questions.length;
+            document.getElementById('errorCount').textContent = errors;
+
+            switchScreen('resultScreen');
+        }
+
+        // Перейти в разделы
+        function goToSections() {
+            loadSections();
+        }
+
+        // Переключение экранов
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
