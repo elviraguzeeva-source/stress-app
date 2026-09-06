@@ -1,6 +1,6 @@
 python-telegram-bot==20.7
 flask==3.0.0
-psycopg==3.2.1
+pg8000==1.30.4
 python-dotenv==1.0.0
 requests==2.31.0
 pyyaml==6.0.1
